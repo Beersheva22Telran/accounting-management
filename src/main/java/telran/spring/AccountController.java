@@ -5,12 +5,14 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import telran.spring.security.AccountService;
+import telran.spring.security.PasswordValidator;
 import telran.spring.security.dto.Account;
 @RestController
 @RequestMapping("accounts")
 @RequiredArgsConstructor
 public class AccountController implements AccountService {
 final AccountService accountService;
+final PasswordValidator passwordValidator;
 	@Override
 	@GetMapping("{username}")
 	public Account getAccount(@PathVariable String username) {
