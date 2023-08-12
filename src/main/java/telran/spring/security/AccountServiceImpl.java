@@ -1,12 +1,14 @@
 package telran.spring.security;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
@@ -25,13 +27,17 @@ public class AccountServiceImpl implements AccountService {
      final AccountProvider provider;
      ConcurrentHashMap<String, Account> accounts = new ConcurrentHashMap<>();
      @Value("${app.expiration.period:600}")
-     long expirationPeriodHours;
+     long expirationPeriod;
      @Value("${app.security.passwords.limit:3}")
 		int limitPasswords;
      @Autowired
       UserDetailsManager userDetailsManager;
      @Value("${app.security.validation.period:3600000}")
 	private long validationPeriod;
+     @Value("${app.security.validation.time.unit:HOURS}")
+     private ChronoUnit unit;
+     
+     
      
 	@Override
 	public Account getAccount(String username) {
@@ -56,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
 		String passwordHash = passwordEncoder.encode(plainPassword);
 		Account user = new Account(username, passwordHash, account.getRoles());
 		
-		LocalDateTime ldt = LocalDateTime.now().plusHours(expirationPeriodHours);
+		LocalDateTime ldt = getExpired();
 		user.setExpDate(ldt);
 		
 		LinkedList<String> passwords = new LinkedList<>();
@@ -69,12 +75,13 @@ public class AccountServiceImpl implements AccountService {
 		
 	}
 
+	private LocalDateTime getExpired() {
+		return LocalDateTime.now().plus(expirationPeriod, unit);
+	}
+
 	private void createUser(Account user) {
 		accounts.putIfAbsent(user.getUsername(), user) ;
-		userDetailsManager.createUser(User.withUsername(user.getUsername())
-				.password(user.getPassword()).roles(user.getRoles())
-				.accountExpired(LocalDateTime.now().compareTo(user.getExpDate())<=0)
-				.build());
+		userDetailsManager.createUser(createUserDetails(user));
 		
 	}
 
@@ -105,14 +112,17 @@ public class AccountServiceImpl implements AccountService {
 		String[]roles = account.getRoles();
 		Account newAccount = new Account(username, hashPassword, roles);
 		newAccount.setPasswords(passwords);
-		LocalDateTime expTime = LocalDateTime.now().plusHours(expirationPeriodHours);
+		LocalDateTime expTime = getExpired();
 		newAccount.setExpDate(expTime);
 		accounts.put(username, newAccount);
-		userDetailsManager.updateUser(User.withUsername(username)
-				.password(hashPassword).roles(roles)
-				.accountExpired(LocalDateTime.now()
-						.compareTo(expTime) <= 0).build());
+		userDetailsManager.updateUser(createUserDetails(newAccount));
 		
+	}
+
+	private UserDetails createUserDetails(Account account) {
+		return User.withUsername(account.getUsername())
+				.password(account.getPassword()).roles(account.getRoles())
+				.accountExpired(isExpired(account)).build();
 	}
 
 	@Override
@@ -144,18 +154,22 @@ public class AccountServiceImpl implements AccountService {
 		listAccounts.forEach(a -> createUser(a));
 	}
 	private void expirationValidation() {
-		log.debug("expiration validation");
-		accounts.values().stream().filter(this::isExpired).forEach(a -> 
-				userDetailsManager.updateUser(User.withUsername(a.getUsername())
-						.accountExpired(true).build())
-			
-		);
+		
+		int[] count = {0};
+		accounts.values().stream().filter(this::isExpired).forEach(a -> {
+			log.debug("account {} expired", a);
+				userDetailsManager.updateUser(User.withUsername(a.getUsername()).password(a.getPassword())
+						.accountExpired(true).build());
+				count[0]++;
+		});
+		log.debug("expiration validation {} accounts have been expired", count[0]);	
+		
 		
 	}
 
 	private boolean isExpired(Account a) {
 		
-		return LocalDateTime.now().isBefore(a.getExpDate());
+		return LocalDateTime.now().isAfter(a.getExpDate());
 	}
 
 	@PreDestroy

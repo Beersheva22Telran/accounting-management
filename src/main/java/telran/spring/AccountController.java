@@ -10,6 +10,7 @@ import telran.spring.security.dto.Account;
 @RestController
 @RequestMapping("accounts")
 @RequiredArgsConstructor
+
 public class AccountController implements AccountService {
 final AccountService accountService;
 final PasswordValidator passwordValidator;
@@ -23,21 +24,23 @@ final PasswordValidator passwordValidator;
 	@Override
 	@PostMapping
 	public void addAccount(@RequestBody @Valid Account account) {
-		// TODO Auto-generated method stub
+		passwordValidator.validate(account.getPassword());
+		accountService.addAccount(account);
 
 	}
 
 	@Override
 	@PutMapping("{username}")
-	public void updatePassword(@PathVariable String username, String newPassword) {
-		// TODO Auto-generated method stub
+	public void updatePassword(@PathVariable String username, @RequestBody String newPassword) {
+		passwordValidator.validate(newPassword);
+		accountService.updatePassword(username, newPassword);
 
 	}
 
 	@Override
 	@DeleteMapping("{username}")
 	public void deleteAccount(@PathVariable String username) {
-		// TODO Auto-generated method stub
+		accountService.deleteAccount(username);
 
 	}
 
