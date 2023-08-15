@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import telran.spring.exceptions.NotFoundException;
 import telran.spring.security.AccountService;
 import telran.spring.security.PasswordValidatorImpl;
-import telran.spring.security.SecurityConfiguration;
 import telran.spring.security.dto.Account;
 
 @SpringBootApplication

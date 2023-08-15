@@ -29,11 +29,10 @@ import telran.spring.security.dto.Account;
 		AccountServiceImpl.class, AccountingConfiguration.class})
 @TestPropertySource(properties = {"app.security.admin.password=ppp","app.security.validation.period=500",
 		"app.security.accounts.file.name=test.data", "logging.level.telran=debug","app.expiration.period=2",
-		"app.security.validation.time.unit=SECONDS"})
+		"app.expiration.time.unit=SECONDS"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AccountingServiceTest {
 	Account account = new Account("user", "userPass", new String[] {"USER"});
-	Account accountSamePassword = new Account("user1", "userPass", new String[] {"USER"});
 	@Autowired
 	AccountService service;
 	@Autowired
