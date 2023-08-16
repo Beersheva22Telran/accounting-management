@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 public class SecurityConfiguration {
 	
 @Bean
-@Order
 SecurityFilterChain configure(HttpSecurity httpSec) throws Exception {
 	
 	return httpSec.csrf(custom -> custom.disable())
