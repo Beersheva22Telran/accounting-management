@@ -14,9 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @Slf4j
 public class AccountingConfiguration {
-	@Value("${app.security.admin.password}")
+	@Value("${app.accounts.admin.password}")
     String adminPassword;
-    @Value("${app.security.admin.username:admin}")
+    @Value("${app.accounts.admin.username:admin}")
     String adminUsername;
 	@Bean
 	PasswordEncoder getPasswordEncoder() {

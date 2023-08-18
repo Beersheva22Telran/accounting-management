@@ -27,9 +27,7 @@ import telran.spring.security.dto.Account;
 @Slf4j
 @SpringBootTest(classes= {AccountProviderImpl.class,
 		AccountServiceImpl.class, AccountingConfiguration.class})
-@TestPropertySource(properties = {"app.security.admin.password=ppp","app.security.validation.period=500",
-		"app.security.accounts.file.name=test.data", "logging.level.telran=debug","app.expiration.period=2",
-		"app.expiration.time.unit=SECONDS"})
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AccountingServiceTest {
 	Account account = new Account("user", "userPass", new String[] {"USER"});

@@ -1,0 +1,33 @@
+{"properties": [
+  {
+    "name": "app.accounts.expiration.period",
+    "type": "java.lang.String",
+    "description": "defines expiration period for accounts (AccountingManagement)"
+  },
+  {
+    "name": "app.accounts.admin.password",
+    "type": "java.lang.String",
+    "description": "defines password for embedded admin account"
+  },
+  {
+    "name": "app.accounts.admin.username",
+    "type": "java.lang.String",
+    "description": "defines username for embedded admin account"
+  },
+  {
+    "name": "app.accounts.expiration.time.unit",
+    "type": "java.lang.String",
+    "description": "defines time unit for app.accounts.expiration.period"
+  },
+  {
+    "name": "app.accounts.validation.period",
+    "type": "java.lang.String",
+    "description": "defines period for accounts expired validation in milliseconds"
+  },
+  {
+    "name": "app.accounts.file.name",
+    "type": "java.lang.String",
+    "description": "defines file name for saving accounts data"
+  }
+  
+]}

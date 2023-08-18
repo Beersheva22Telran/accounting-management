@@ -10,7 +10,7 @@ import telran.spring.security.dto.Account;
 @RestController
 @RequestMapping("accounts")
 @RequiredArgsConstructor
-
+@CrossOrigin
 public class AccountController  {
 final AccountService accountService;
 final PasswordValidator passwordValidator;

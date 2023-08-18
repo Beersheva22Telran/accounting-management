@@ -26,15 +26,15 @@ public class AccountServiceImpl implements AccountService {
 	 final PasswordEncoder passwordEncoder;
      final AccountProvider provider;
      ConcurrentHashMap<String, Account> accounts = new ConcurrentHashMap<>();
-     @Value("${app.expiration.period:600}")
+     @Value("${app.accounts.expiration.period:600}")
      long expirationPeriod;
-     @Value("${app.expiration.time.unit:HOURS}")
+     @Value("${app.accounts.expiration.time.unit:HOURS}")
      private ChronoUnit unit;
-     @Value("${app.security.passwords.limit:3}")
+     @Value("${app.accounts.passwords.limit:3}")
 		int limitPasswords;
      @Autowired
       UserDetailsManager userDetailsManager;
-     @Value("${app.security.validation.period:3600000}")
+     @Value("${app.accounts.validation.period:3600000}")
 	private long validationPeriod;
     
      

@@ -14,7 +14,7 @@ import java.nio.file.Path;
 @Service
 @Slf4j
 public class AccountProviderImpl implements AccountProvider {
- @Value("${app.security.accounts.file.name:accounts.data}")
+ @Value("${app.accounts.file.name:accounts.data}")
 	private String fileName;
 	@SuppressWarnings("unchecked")
 	@Override
